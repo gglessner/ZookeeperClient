@@ -143,18 +143,6 @@ python ZookeeperClient.py --tls --no-verify-ssl --server zk1.example.com:2281
 python ZookeeperClient.py --tls --cert-file client.pem --key-file client.key --ca-file ca.pem --server zk1.example.com:2281 --audit
 ```
 
-### Quick Connection Test
-
-Simple connectivity test without security scanning:
-```bash
-python test_connection.py
-```
-
-With TLS:
-```bash
-python test_connection.py --tls --server zk1.example.com:2281
-```
-
 ## Command Line Options
 
 | Option | Short | Description |
