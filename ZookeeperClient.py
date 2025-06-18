@@ -1340,6 +1340,100 @@ class ZookeeperSecurityAuditor:
         
         return scan_results
     
+    def get_server_version_only(self, timeout=5):
+        """
+        Get only the ZooKeeper server version with timeout
+        
+        Args:
+            timeout (int): Timeout in seconds (default: 5)
+            
+        Returns:
+            str: Server version or error message
+        """
+        import threading
+        import time
+        
+        result = {"version": None, "error": None}
+        
+        def get_version():
+            try:
+                # Try to connect with reduced timeout
+                if not self.client:
+                    self.client = KazooClient(hosts=self.hosts, timeout=timeout)
+                
+                self.client.start()
+                
+                # Try to get version using four-letter commands
+                version_info = None
+                
+                # Try 'srvr' command first (most reliable for version)
+                try:
+                    resp = self._get_server_stats_cmd('srvr')
+                    if resp and 'version' in resp.lower():
+                        for line in resp.splitlines():
+                            if 'version' in line.lower():
+                                version_info = line.strip()
+                                break
+                except:
+                    pass
+                
+                # If 'srvr' didn't work, try 'stat'
+                if not version_info:
+                    try:
+                        resp = self._get_server_stats_cmd('stat')
+                        if resp and 'version' in resp.lower():
+                            for line in resp.splitlines():
+                                if 'version' in line.lower():
+                                    version_info = line.strip()
+                                    break
+                    except:
+                        pass
+                
+                # If still no version, try 'conf'
+                if not version_info:
+                    try:
+                        resp = self._get_server_stats_cmd('conf')
+                        if resp and 'version' in resp.lower():
+                            for line in resp.splitlines():
+                                if 'version' in line.lower():
+                                    version_info = line.strip()
+                                    break
+                    except:
+                        pass
+                
+                if version_info:
+                    result["version"] = version_info
+                else:
+                    result["version"] = "ZooKeeper version: Unknown (could not retrieve version information)"
+                    
+            except Exception as e:
+                result["error"] = str(e)
+            finally:
+                # Clean up
+                if self.client:
+                    try:
+                        self.client.stop()
+                        self.client.close()
+                    except:
+                        pass
+        
+        # Start version retrieval in a thread
+        thread = threading.Thread(target=get_version)
+        thread.daemon = True
+        thread.start()
+        
+        # Wait for timeout
+        thread.join(timeout)
+        
+        if thread.is_alive():
+            # Thread is still running, timeout occurred
+            return f"Error: Connection timeout after {timeout} seconds"
+        
+        if result["error"]:
+            return f"Error: {result['error']}"
+        else:
+            return result["version"]
+    
     def cleanup_test_artifacts(self):
         """Clean up any test artifacts that might have been left behind"""
         print("\n🧹 Cleaning up any remaining test artifacts...")
@@ -1451,6 +1545,7 @@ def parse_arguments():
         epilog="""
 Examples:
   python ZookeeperClient.py                           # Basic connection test
+  python ZookeeperClient.py --version                 # Get ZooKeeper server version
   python ZookeeperClient.py --audit                   # Run comprehensive security audit
   python ZookeeperClient.py --server zk1.example.com:2181 --audit  # Audit specific server
   python ZookeeperClient.py --auth-bypass             # Test authentication bypass
@@ -1590,6 +1685,12 @@ Examples:
         help='Perform deep recursive scanning with increased depth and comprehensive coverage'
     )
     
+    parser.add_argument(
+        '--version',
+        action='store_true',
+        help='Display ZooKeeper server version and exit'
+    )
+    
     return parser.parse_args()
 
 
@@ -1612,6 +1713,13 @@ def main():
     )
     
     try:
+        # Handle version request first
+        if args.version:
+            print("Getting ZooKeeper server version...")
+            version = auditor.get_server_version_only(timeout=5)
+            print(version)
+            sys.exit(0)
+        
         # Connect to ZooKeeper
         if auditor.connect():
             # Get basic server information

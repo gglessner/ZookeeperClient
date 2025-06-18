@@ -63,6 +63,13 @@ Test basic connectivity to ZooKeeper:
 python ZookeeperClient.py
 ```
 
+### Get Server Version
+
+Quickly get the ZooKeeper server version (5-second timeout):
+```bash
+python ZookeeperClient.py --version
+```
+
 ### Comprehensive Security Audit
 
 Run all security tests:
@@ -166,6 +173,7 @@ python ZookeeperClient.py --tls --cert-file client.pem --key-file client.key --c
 | `--harvest-creds` | | Extract credentials, tokens, and keys from data |
 | `--analyze-configs` | | Analyze configuration patterns and extract endpoints |
 | `--deep-scan` | | Perform deep recursive scanning with comprehensive coverage |
+| `--version` | | Display ZooKeeper server version and exit |
 
 ## Security Tests Explained
 
