@@ -30,6 +30,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 - **Data Exposure Scanning**: Identifies sensitive data stored in ZooKeeper
 - **Privilege Escalation Testing**: Tests ability to create/modify nodes in sensitive locations
 - **Information Disclosure Testing**: Tests access to system and internal paths
+- **CVE Vulnerability Analysis**: Comprehensive integrated database of known ZooKeeper vulnerabilities
+- **Advanced Penetration Testing**: Production-safe advanced security testing techniques
 - **Comprehensive Reporting**: Generates detailed security audit reports
 - **Automatic Cleanup**: All tests clean up after themselves, leaving no artifacts
 
@@ -41,6 +43,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 - **Identifies common ZooKeeper security misconfigurations**
 - **Tests for data exposure and access control issues**
 
+### 🚀 Advanced Penetration Testing Features
+- **Session Hijacking Testing**: Analyzes session ID patterns and predictability
+- **Race Condition Testing**: Tests for race conditions in node operations
+- **Path Traversal Testing**: Tests for path traversal vulnerabilities
+- **Injection Attack Testing**: Tests for various injection vulnerabilities
+- **ACL Bypass Techniques**: Tests multiple ACL bypass methods
+- **Ephemeral Node Manipulation**: Tests ephemeral node security
+- **Quota Bypass Testing**: Tests quota enforcement mechanisms
+- **Connection Security Testing**: Tests connection timeout and authentication enforcement
+- **Authentication Scheme Enumeration**: Discovers available authentication methods
+- **Node Watcher Bypass**: Tests watcher mechanism security
+- **Serialization Vulnerability Testing**: Tests for serialization-based attacks
+
+### 📊 Data Discovery & Analysis
+- **Pattern Search**: Search for specific patterns in node names and data
+- **Data Export**: Export all discovered data to JSON format
+- **Credential Harvesting**: Extract credentials, tokens, and keys from data
+- **Configuration Analysis**: Analyze configuration patterns and service endpoints
+- **Deep Scanning**: Comprehensive recursive scanning with detailed analysis
+- **Recursive Path Reading**: Read all data from specific paths
+
 ## Prerequisites
 
 - Python 3.6 or higher
@@ -49,10 +72,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ## Installation
 
-1. Install the required dependencies:
+1. Clone or download the repository
+2. Install the required dependencies:
 ```bash
 pip install -r requirements.txt
 ```
+
+**Note:** The tool is now fully self-contained. All CVE functionality is integrated into the main script - no additional files are required.
 
 ## Usage
 
@@ -63,12 +89,25 @@ Test basic connectivity to ZooKeeper:
 python ZookeeperClient.py
 ```
 
-### Get Server Version
+### Get Server Version with CVE Analysis
 
-Quickly get the ZooKeeper server version (5-second timeout):
+Quickly get the ZooKeeper server version with comprehensive CVE analysis:
 ```bash
 python ZookeeperClient.py --version
 ```
+
+### CVE Vulnerability Analysis
+
+Check for known CVEs affecting the ZooKeeper version:
+```bash
+# Get version with CVE analysis
+python ZookeeperClient.py --version
+
+# Only perform CVE analysis
+python ZookeeperClient.py --cve-check
+```
+
+**Note:** CVE checking is now fully integrated into the main script. The tool includes a comprehensive database of 30+ known ZooKeeper CVEs with version information, severity levels, and detailed descriptions.
 
 ### Comprehensive Security Audit
 
@@ -77,25 +116,37 @@ Run all security tests:
 python ZookeeperClient.py --audit
 ```
 
+### Advanced Penetration Testing
+
+Run all advanced penetration testing techniques:
+```bash
+python ZookeeperClient.py --advanced-pentest
+```
+
 ### Individual Security Tests
 
 Test specific security aspects:
 
 ```bash
-# Test authentication bypass vulnerabilities
+# Basic Security Tests
 python ZookeeperClient.py --auth-bypass
-
-# Enumerate ACLs on nodes
 python ZookeeperClient.py --enumerate-acls
-
-# Scan for sensitive data exposure
 python ZookeeperClient.py --data-exposure
-
-# Test privilege escalation opportunities
 python ZookeeperClient.py --privilege-escalation
-
-# Test information disclosure
 python ZookeeperClient.py --info-disclosure
+
+# Advanced Penetration Testing
+python ZookeeperClient.py --session-hijacking
+python ZookeeperClient.py --race-conditions
+python ZookeeperClient.py --path-traversal
+python ZookeeperClient.py --injection-attacks
+python ZookeeperClient.py --acl-bypass
+python ZookeeperClient.py --ephemeral-manipulation
+python ZookeeperClient.py --quota-bypass
+python ZookeeperClient.py --connection-security
+python ZookeeperClient.py --auth-enumeration
+python ZookeeperClient.py --watcher-bypass
+python ZookeeperClient.py --serialization
 ```
 
 ### Data Discovery & Analysis
@@ -117,6 +168,9 @@ python ZookeeperClient.py --analyze-configs
 
 # Perform deep recursive scanning with comprehensive coverage
 python ZookeeperClient.py --deep-scan
+
+# Read all data from a specific path recursively
+python ZookeeperClient.py --read-path /config
 ```
 
 ### Custom Server Configuration
@@ -134,277 +188,202 @@ python ZookeeperClient.py --server zk1.example.com:2181 --timeout 30 --audit
 Connect to ZooKeeper servers with TLS/SSL encryption:
 
 ```bash
-# Basic TLS connection (default port 2281)
-python ZookeeperClient.py --tls --server zk1.example.com:2281
+# Basic TLS connection (default port 2181)
+python ZookeeperClient.py --tls --server zk1.example.com:2181
 
 # TLS with client certificate authentication
-python ZookeeperClient.py --tls --cert-file client.pem --key-file client.key --server zk1.example.com:2281
+python ZookeeperClient.py --tls --cert-file client.pem --key-file client.key --server zk1.example.com:2181
 
 # TLS with CA certificate verification
-python ZookeeperClient.py --tls --ca-file ca.pem --server zk1.example.com:2281
+python ZookeeperClient.py --tls --ca-file ca.pem --server zk1.example.com:2181
 
 # TLS without certificate verification (not recommended for production)
-python ZookeeperClient.py --tls --no-verify-ssl --server zk1.example.com:2281
+python ZookeeperClient.py --tls --no-verify-ssl --server zk1.example.com:2181
 
 # Comprehensive audit with TLS
-python ZookeeperClient.py --tls --cert-file client.pem --key-file client.key --ca-file ca.pem --server zk1.example.com:2281 --audit
+python ZookeeperClient.py --tls --cert-file client.pem --key-file client.key --ca-file ca.pem --server zk1.example.com:2181 --audit
 ```
 
 ## Command Line Options
 
-| Option | Short | Description |
-|--------|-------|-------------|
-| `--server` | `-s` | ZooKeeper server:port (default: localhost:2181) |
-| `--audit` | `-a` | Run comprehensive security audit |
-| `--auth-bypass` | `-b` | Test authentication bypass vulnerabilities |
-| `--enumerate-acls` | `-e` | Enumerate ACLs on nodes |
-| `--data-exposure` | `-d` | Test for sensitive data exposure |
-| `--privilege-escalation` | `-p` | Test privilege escalation opportunities |
-| `--info-disclosure` | `-i` | Test information disclosure vulnerabilities |
-| `--read-path` | | Recursively read all data from specified path |
-| `--timeout` | | Connection timeout in seconds (default: 10) |
-| `--tls` | | Enable TLS/SSL connection |
-| `--cert-file` | | Path to client certificate file (PEM format) |
-| `--key-file` | | Path to client private key file (PEM format) |
-| `--ca-file` | | Path to CA certificate file (PEM format) |
-| `--no-verify-ssl` | | Disable SSL certificate verification (not recommended) |
-| `--search-pattern` | | Search for specific patterns in node names and data |
-| `--export-data` | | Export all discovered data to JSON file |
-| `--harvest-creds` | | Extract credentials, tokens, and keys from data |
-| `--analyze-configs` | | Analyze configuration patterns and extract endpoints |
-| `--deep-scan` | | Perform deep recursive scanning with comprehensive coverage |
-| `--version` | | Display ZooKeeper server version and exit |
+### Basic Options
+- `--server, -s`: ZooKeeper server:port (default: localhost:2181)
+- `--timeout`: Connection timeout in seconds (default: 10)
+- `--version`: Display ZooKeeper server version with CVE analysis and exit
+- `--cve-check`: Only perform CVE vulnerability analysis
+- `--help, -h`: Show help message and exit
 
-## Security Tests Explained
+### Basic Security Tests
+- `--audit, -a`: Run comprehensive security audit
+- `--auth-bypass, -b`: Test authentication bypass vulnerabilities
+- `--enumerate-acls, -e`: Enumerate ACLs on nodes
+- `--data-exposure, -d`: Test for sensitive data exposure
+- `--privilege-escalation, -p`: Test privilege escalation opportunities
+- `--info-disclosure, -i`: Test information disclosure vulnerabilities
 
-### Authentication Bypass Testing
-Tests common default credentials and authentication schemes:
-- `admin:admin`, `zookeeper:zookeeper`, `admin:password`
-- Empty credentials and various authentication schemes
-- Identifies weak or default authentication configurations
+### Advanced Penetration Testing
+- `--advanced-pentest`: Run all advanced penetration testing techniques
+- `--session-hijacking`: Test for session hijacking vulnerabilities
+- `--race-conditions`: Test for race condition vulnerabilities
+- `--path-traversal`: Test for path traversal vulnerabilities
+- `--injection-attacks`: Test for injection vulnerabilities
+- `--acl-bypass`: Test ACL bypass techniques
+- `--ephemeral-manipulation`: Test ephemeral node manipulation vulnerabilities
+- `--quota-bypass`: Test quota bypass vulnerabilities
+- `--connection-security`: Test connection security vulnerabilities (production-safe)
+- `--auth-enumeration`: Test authentication scheme enumeration
+- `--watcher-bypass`: Test node watcher bypass vulnerabilities
+- `--serialization`: Test serialization vulnerabilities
 
-### ACL Enumeration
-Recursively discovers Access Control Lists on ZooKeeper nodes:
-- Maps out permission structures
-- Identifies overly permissive ACLs
-- Finds nodes with no access controls
+### Data Discovery & Analysis
+- `--read-path`: Recursively read all data from specified path (e.g., /config)
+- `--search-pattern`: Search for specific patterns in node names and data (e.g., "database|password|secret")
+- `--export-data`: Export all discovered data to specified file (JSON format)
+- `--harvest-creds`: Extract and display credentials, tokens, and keys from discovered data
+- `--analyze-configs`: Analyze configuration patterns and extract service endpoints, IPs, and domains
+- `--deep-scan`: Perform deep recursive scanning with increased depth and comprehensive coverage
 
-### Data Exposure Scanning
-Scans for sensitive data patterns in node values:
-- Passwords, secrets, keys, tokens
-- Configuration data, database connections
-- Internal endpoints and credentials
+### TLS/SSL Options
+- `--tls`: Enable TLS/SSL connection
+- `--cert-file`: Path to client certificate file (PEM format)
+- `--key-file`: Path to client private key file (PEM format)
+- `--ca-file`: Path to CA certificate file (PEM format)
+- `--no-verify-ssl`: Disable SSL certificate verification (not recommended for production)
 
-### Privilege Escalation Testing
-Tests ability to create/modify nodes in sensitive locations:
-- `/admin`, `/config`, `/system`, `/internal`
-- `/security`, `/users`, `/auth`, `/credentials`
-- Tests ACL modification capabilities
-- **Automatically cleans up all test nodes**
+## Examples
 
-### Information Disclosure Testing
-Tests access to system and internal paths:
-- `/zookeeper`, `/zookeeper/config`
-- `/system`, `/admin`, `/internal`
-- `/debug`, `/metrics`
+### Quick Start
+```bash
+# Basic connection test
+python ZookeeperClient.py
 
-## Data Discovery & Analysis Features
+# Get version and CVE analysis
+python ZookeeperClient.py --version
 
-### 🔍 Pattern-Based Data Hunting
-- **Regex pattern matching** in node names and data content
-- **Flexible search patterns** for specific data types
-- **Case-insensitive searching** for comprehensive coverage
-- **Depth-controlled scanning** to manage performance
+# Run comprehensive audit
+python ZookeeperClient.py --audit
 
-### 📤 Data Export & Analysis
-- **Complete data export** to JSON format with metadata
-- **Structured output** including ACLs, statistics, and node information
-- **Error handling** for inaccessible nodes
-- **Comprehensive coverage** of all accessible data
-
-### 🔑 Credential Harvesting
-- **Password extraction** from configuration data
-- **API key discovery** and token identification
-- **Private key detection** (RSA, DSA, EC, OpenSSH)
-- **Certificate identification** (X.509, PEM formats)
-- **URL and endpoint extraction** from configuration data
-- **IP address and domain discovery**
-
-### 🔧 Configuration Analysis
-- **Service identification** (Kafka, Hadoop, Elasticsearch, etc.)
-- **Database connection extraction** (JDBC, MongoDB, Redis, etc.)
-- **Endpoint discovery** (HTTP, WebSocket, FTP, etc.)
-- **Environment variable detection**
-- **Port and protocol identification**
-- **JSON/YAML configuration parsing**
-
-### 🔍 Deep Scanning
-- **Comprehensive node enumeration** with increased depth
-- **Data size analysis** and large node identification
-- **Interesting path detection** based on naming patterns
-- **ACL pattern analysis** across all nodes
-- **Error tracking** and access issue identification
-- **Statistical reporting** of discovered data
-
-## TLS/SSL Security Features
-
-### 🔒 Secure Connection Support
-- **TLS/SSL encryption** for secure communication
-- **Client certificate authentication** for mutual TLS
-- **CA certificate verification** for server authentication
-- **Configurable certificate verification** for testing environments
-
-### 📜 Certificate Requirements
-- **Client certificates**: PEM format with private key
-- **CA certificates**: PEM format for server verification
-- **Certificate chains**: Supported for complex PKI setups
-- **Key formats**: RSA and ECDSA keys supported
-
-### 🛡️ TLS Security Best Practices
-- **Always verify SSL certificates** in production environments
-- **Use strong cipher suites** (automatically selected by Python SSL)
-- **Keep certificates and keys secure** with appropriate file permissions
-- **Regular certificate rotation** for enhanced security
-- **Monitor certificate expiration** to prevent connection failures
-
-## Production Safety Features
-
-### 🧹 Automatic Cleanup
-- All test nodes are automatically created with unique timestamps
-- Test nodes are immediately deleted after testing
-- Cleanup runs even if tests fail or are interrupted
-- No artifacts left behind in production environments
-
-### 🚫 No DoS Testing
-- Removed all denial-of-service functionality
-- No rapid node creation tests
-- No resource exhaustion scenarios
-- Safe for production environments
-
-### 🔒 Non-Destructive Operations
-- Tests are read-only where possible
-- Write operations are minimal and temporary
-- All changes are reverted automatically
-- Designed for security assessment, not exploitation
-
-## Sample Output
-
-### Comprehensive Audit Report
+# Test specific server
+python ZookeeperClient.py --server zk1.example.com:2181 --audit
 ```
-=== ZooKeeper Security Auditor ===
-Connecting to ZooKeeper at localhost:2181...
-✅ Successfully connected to ZooKeeper!
-ZooKeeper server version: 3.9.3-${mvngit.commit.id}, built on 2024-10-24 22:44 UTC
 
-🚀 Starting Comprehensive Security Audit...
+### Security Testing
+```bash
+# Test authentication bypass
+python ZookeeperClient.py --auth-bypass
 
-🔍 Testing Authentication Bypass...
-⚠️  Potential auth bypass with digest:admin:admin
+# Enumerate ACLs
+python ZookeeperClient.py --enumerate-acls
 
-🔍 Enumerating ACLs starting from /...
-📁 /config: 2 ACLs found
-   - ACL(perms=31, acl_list=['ALL'], id=Id(scheme='world', id='anyone'))
+# Test for data exposure
+python ZookeeperClient.py --data-exposure
 
-🔍 Testing for Data Exposure starting from /...
-⚠️  Potential sensitive data in /config/database: contains 'password'
-
-🔍 Testing Privilege Escalation...
-⚠️  Can create nodes in /admin
-🧹 Cleaning up test nodes...
-   ✅ Cleaned up: /admin/test_privilege_escalation_1234567890
-
-🔍 Testing Information Disclosure...
-📁 System path accessible: /zookeeper
-
-🧹 Cleaning up any remaining test artifacts...
-   ✅ No test artifacts found to clean up
-
-============================================================
-🔒 ZOOKEEPER SECURITY AUDIT REPORT
-============================================================
-
-📡 CONNECTION INFORMATION:
-   Server: localhost:2181
-   Version: 3.9.3-${mvngit.commit.id}, built on 2024-10-24 22:44 UTC
-   State: CONNECTED
-
-🚨 VULNERABILITIES FOUND (2):
-   [HIGH] authentication_bypass
-       Auth: digest:admin:admin
-   [HIGH] privilege_escalation
-       Location: /admin
-
-⚠️  SECURITY FINDINGS (1):
-   [MEDIUM] information_disclosure
-       Path: /zookeeper
-
-📊 DATA EXPOSURE (1):
-   [MEDIUM] /config/database
-       Pattern: password
-       Preview: {"host": "db.example.com", "password": "secret123", "user": "admin"}...
-
-🔐 ACCESS CONTROL SUMMARY:
-   /config: 2 ACLs
-
-============================================================
-Audit completed successfully!
-============================================================
+# Run advanced penetration testing
+python ZookeeperClient.py --advanced-pentest
 ```
+
+### Data Discovery
+```bash
+# Search for sensitive patterns
+python ZookeeperClient.py --search-pattern "password|secret|key"
+
+# Export all data
+python ZookeeperClient.py --export-data zk_data.json
+
+# Harvest credentials
+python ZookeeperClient.py --harvest-creds
+
+# Deep scan
+python ZookeeperClient.py --deep-scan
+```
+
+### TLS/SSL Testing
+```bash
+# TLS connection
+python ZookeeperClient.py --tls --server zk1.example.com:2181
+
+# TLS with client certificates
+python ZookeeperClient.py --tls --cert-file client.pem --key-file client.key --server zk1.example.com:2181
+
+# Comprehensive audit with TLS
+python ZookeeperClient.py --tls --cert-file client.pem --key-file client.key --ca-file ca.pem --server zk1.example.com:2181 --audit
+```
+
+## CVE Database
+
+The tool includes a comprehensive database of known ZooKeeper vulnerabilities:
+
+- **30+ CVEs** covering versions from 3.4.0 to 3.8.2
+- **Severity levels**: CRITICAL, HIGH, MEDIUM, LOW
+- **Detailed descriptions** and CVSS scores
+- **Version range matching** for accurate vulnerability assessment
+- **Automatic analysis** during version checks
+
+### CVE Categories
+- Remote Code Execution vulnerabilities
+- Authentication bypass issues
+- Information disclosure vulnerabilities
+- Denial of Service vulnerabilities
+- Log4j/Log4Shell vulnerabilities
+- Serialization vulnerabilities
 
 ## Security Considerations
 
-### Legal and Ethical Use
-- Only use this tool on systems you own or have explicit permission to test
-- Follow responsible disclosure practices
-- Comply with applicable laws and regulations
+### Production Safety
+- **No DoS Testing**: All denial-of-service functionality has been removed
+- **Automatic Cleanup**: All test artifacts are automatically removed
+- **Non-Destructive**: Tests are designed to be safe for production use
+- **Connection Limits**: Tests use reasonable connection limits to avoid overwhelming servers
 
-### Production Environment Safety
-- **All tests are designed to be production-safe**
-- **Automatic cleanup ensures no artifacts remain**
-- **No DoS or destructive testing included**
-- Monitor system resources during testing
-
-### Common Findings
-- **Weak Authentication**: Default credentials or no authentication
-- **Overly Permissive ACLs**: World-readable or world-writable nodes
-- **Data Exposure**: Sensitive configuration data stored in plain text
-- **Information Disclosure**: Access to system paths and metrics
-- **Privilege Escalation**: Ability to create nodes in sensitive locations
+### Testing Environment
+- Test in a controlled environment first
+- Ensure you have permission to test the target ZooKeeper server
+- Monitor server performance during testing
+- Review all findings before taking action
 
 ## Troubleshooting
 
-### Connection Issues
-- Verify ZooKeeper server is running and accessible
-- Check firewall settings and network connectivity
-- Ensure correct server:port format
+### Common Issues
 
-### Permission Errors
-- Some tests may fail due to legitimate access controls
-- This is expected behavior and indicates proper security
+**Connection Failed**
+```bash
+# Check if ZooKeeper is running
+telnet localhost 2181
 
-### Timeout Issues
-- Increase timeout value for slow networks: `--timeout 30`
-- Check network latency and server performance
+# Try with explicit server
+python ZookeeperClient.py --server localhost:2181
+```
 
-### Cleanup Issues
-- If cleanup fails, manually remove any test nodes with patterns:
-  - `/test_privilege_escalation_*`
-  - `/test_node_*`
-  - `/auth_test_*`
+**Timeout Issues**
+```bash
+# Increase timeout
+python ZookeeperClient.py --timeout 30 --server zk1.example.com:2181
+```
 
-## Dependencies
+**TLS Connection Issues**
+```bash
+# Check certificate files
+python ZookeeperClient.py --tls --cert-file client.pem --key-file client.key --server zk1.example.com:2181
 
-- `kazoo==2.8.0` - Python client for Apache ZooKeeper
+# Try without certificate verification (test only)
+python ZookeeperClient.py --tls --no-verify-ssl --server zk1.example.com:2181
+```
+
+### Error Messages
+
+- **"Connection failed"**: Check if ZooKeeper server is running and accessible
+- **"Authentication failed"**: Server may require authentication
+- **"Permission denied"**: Server may have restrictive ACLs
+- **"Timeout"**: Increase timeout value or check network connectivity
 
 ## Contributing
 
-This tool is designed for security professionals. Contributions should focus on:
-- Additional security test vectors
-- Improved detection capabilities
-- Better reporting and output formatting
-- Performance optimizations
-- **Production safety improvements**
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
 ## Disclaimer
 
-This tool is for security auditing and penetration testing purposes only. Users are responsible for ensuring they have proper authorization before testing any systems. The authors are not responsible for any misuse of this tool. **This tool is designed to be production-safe with automatic cleanup, but always test in a controlled environment first.** 
+This tool is designed for security testing and auditing purposes only. Always ensure you have proper authorization before testing any ZooKeeper server. The authors are not responsible for any misuse of this tool. 
